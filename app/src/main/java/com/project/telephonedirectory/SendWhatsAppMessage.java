@@ -1,6 +1,7 @@
 package com.project.telephonedirectory;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -14,28 +15,39 @@ import android.widget.Toast;
 
 public class SendWhatsAppMessage extends AppCompatActivity {
     private Persons persons;
-    private TextView twPNumber;
-    private EditText editTextWpMessage;
-    private Button btnSendWpMessage;
+    private TextView twPersonName;
+    private TextView twPhoneNumber;
+    private EditText editTextMessage;
+    private Button btnSendMessage;
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_whats_app_message);
 
-        twPNumber = findViewById(R.id.twPNumber);
-        editTextWpMessage = findViewById(R.id.editTextWpMessage);
-        btnSendWpMessage = findViewById(R.id.btnSendWpMessage);
+        twPersonName = findViewById(R.id.twPersonName);
+        twPhoneNumber = findViewById(R.id.twPhoneNumber);
+        editTextMessage = findViewById(R.id.editTextMessage);
+        btnSendMessage = findViewById(R.id.btnSendMessage);
+        toolbar = findViewById(R.id.toolbar);
 
         persons = (Persons) getIntent().getSerializableExtra("person_object");
 
-        twPNumber.setText(persons.getPhone_number());
+        twPersonName.setText(persons.getPerson_name());
+        twPhoneNumber.setText(persons.getPhone_number());
 
-        btnSendWpMessage.setOnClickListener(new View.OnClickListener() {
+        toolbar.setTitle("Send WhatsApp Message");
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowCustomEnabled(true);
+
+
+        btnSendMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String mobileNumber = twPNumber.getText().toString();
-                String message = editTextWpMessage.getText().toString();
+                String mobileNumber = twPhoneNumber.getText().toString();
+                String message = editTextMessage.getText().toString();
 
                 boolean installed = appInstalledOrNot("com.whatsapp");
 
@@ -65,4 +77,11 @@ public class SendWhatsAppMessage extends AppCompatActivity {
         }
         return app_installed;
     }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return super.onSupportNavigateUp();
+    }
+
 }

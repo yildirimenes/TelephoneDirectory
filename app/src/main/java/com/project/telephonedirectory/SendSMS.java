@@ -2,6 +2,7 @@ package com.project.telephonedirectory;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -18,10 +19,11 @@ import android.widget.Toast;
 public class SendSMS extends AppCompatActivity {
 
     private Persons persons;
-    TextView twMessageName;
-    TextView twMessagePnumber;
+    TextView twPersonName;
+    TextView twPhoneNumber;
     Button btnSendMessage;
     EditText editTextMessage;
+    Toolbar toolbar;
 
 
 
@@ -30,16 +32,24 @@ public class SendSMS extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_sms);
 
-        twMessageName = findViewById(R.id.twMessageName);
-        twMessagePnumber = findViewById(R.id.twMessagePnumber);
-        btnSendMessage = findViewById(R.id.btnSendMessage);
+        twPersonName = findViewById(R.id.twPersonName);
+        twPhoneNumber = findViewById(R.id.twPhoneNumber);
         editTextMessage = findViewById(R.id.editTextMessage);
+        btnSendMessage = findViewById(R.id.btnSendMessage);
+        toolbar = findViewById(R.id.toolbar);
 
         persons = (Persons) getIntent().getSerializableExtra("person_object");
 
 
-        twMessageName.setText(persons.getPerson_name());
-        twMessagePnumber.setText(persons.getPhone_number());
+        twPersonName.setText(persons.getPerson_name());
+        twPhoneNumber.setText(persons.getPhone_number());
+
+        toolbar.setTitle("Send SMS");
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowCustomEnabled(true);
+
+
 
         btnSendMessage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,13 +64,10 @@ public class SendSMS extends AppCompatActivity {
             }
         });
 
-
-
-
     }
 
     private void sendMessage() {
-        String sPhone = twMessagePnumber.getText().toString().trim();
+        String sPhone = twPhoneNumber.getText().toString().trim();
         String sMessage = editTextMessage.getText().toString().trim();
 
         if (!sPhone.equals("") && !sMessage.equals("")) {
@@ -88,4 +95,11 @@ public class SendSMS extends AppCompatActivity {
             Toast.makeText(getApplicationContext(),"Permission Denied!",Toast.LENGTH_SHORT).show();
         }
     }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return super.onSupportNavigateUp();
+    }
+
 }

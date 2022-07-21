@@ -27,7 +27,6 @@ public class PersonsAdapter extends RecyclerView.Adapter<PersonsAdapter.CardView
     private Context context;
     private List<Persons> personsList;
     private Database db;
-    //public Persons persons;
 
     public PersonsAdapter(Context context, List<Persons> personsList, Database db) {
         this.context = context;
@@ -37,25 +36,17 @@ public class PersonsAdapter extends RecyclerView.Adapter<PersonsAdapter.CardView
 
     public class CardViewDesignObjectHandler extends RecyclerView.ViewHolder {
 
+        private ImageView imgIcon;
         private TextView twPersonName;
-        private TextView twPhoneNumber;
-        private TextView twEmail;
         private ImageButton imgBtnCall;
         private ImageButton imgBtnMessage;
-        private ImageButton imgBtnEmail;
-        private ImageButton imgBtnWhatsApp;
-        private ImageView imgIcon;
 
         public CardViewDesignObjectHandler(@NonNull View itemView) {
             super(itemView);
+            imgIcon = itemView.findViewById(R.id.imgIcon);
             twPersonName = itemView.findViewById(R.id.twPersonName);
-            twPhoneNumber = itemView.findViewById(R.id.twPhoneNumber);
-            twEmail = itemView.findViewById(R.id.twEmail);
             imgBtnCall = itemView.findViewById(R.id.imgBtnCall);
             imgBtnMessage = itemView.findViewById(R.id.imgBtnMessage);
-            imgBtnEmail = itemView.findViewById(R.id.imgBtnEmail);
-            imgBtnWhatsApp = itemView.findViewById(R.id.imgBtnWhatsApp);
-            imgIcon = itemView.findViewById(R.id.imgIcon);
         }
     }
 
@@ -73,10 +64,6 @@ public class PersonsAdapter extends RecyclerView.Adapter<PersonsAdapter.CardView
 
         holder.twPersonName.setText(person.getPerson_name());
 
-        holder.twPhoneNumber.setText(person.getPhone_number());
-
-        holder.twEmail.setText(person.getPerson_email());
-
         holder.imgIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -88,7 +75,7 @@ public class PersonsAdapter extends RecyclerView.Adapter<PersonsAdapter.CardView
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.action_delete:
-                                Snackbar.make(holder.imgIcon,"Kişi Silinsin Mi ? ",Snackbar.LENGTH_SHORT)
+                                Snackbar.make(holder.imgIcon,"Delete The Contact ?",Snackbar.LENGTH_SHORT)
                                         .setAction("Yes", new View.OnClickListener() {
                                             @Override
                                             public void onClick(View view) {
@@ -119,42 +106,53 @@ public class PersonsAdapter extends RecyclerView.Adapter<PersonsAdapter.CardView
         holder.imgBtnCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String phoneCallNumber = holder.twPhoneNumber.getText().toString();
+                String phoneCallNumber = person.getPhone_number();
                 Intent intent = new Intent(Intent.ACTION_CALL);
                 intent.setData(Uri.parse("tel: " + phoneCallNumber));
-                context.startActivity(intent );
+                context.startActivity(intent);
             }
         });
 
         holder.imgBtnMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context,SendSMS.class);
-                intent.putExtra("person_object", person);
-                context.startActivity(intent);
+                PopupMenu popupMenu = new PopupMenu(context,holder.imgBtnMessage);
+                popupMenu.getMenuInflater().inflate(R.menu.pop_up_message_menu,popupMenu.getMenu());
 
-            }
-        });
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.action_message:
+                                Intent intent = new Intent(context,SendSMS.class);
+                                intent.putExtra("person_object", person);
+                                context.startActivity(intent);
+                                return true;
 
-        holder.imgBtnEmail.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context,SendEmail.class);
-                intent.putExtra("person_object", person);
-                context.startActivity(intent);
-            }
-        });
+                            case R.id.action_wp_message:
+                                intent = new Intent(context, SendWhatsAppMessage.class);
+                                intent.putExtra("person_object",person);
+                                context.startActivity(intent);
+                                return true;
 
-        holder.imgBtnWhatsApp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context,SendWhatsAppMessage.class);
-                intent.putExtra("person_object",person);
-                context.startActivity(intent);
+                            case R.id.action_email_message:
+                                intent = new Intent(context, SendEmail.class);
+                                intent.putExtra("person_object", person);
+                                context.startActivity(intent);
+
+                            default:
+                                return false;
+                        }
+                    }
+                });
+
+                popupMenu.show();
+
             }
         });
 
     }
+
 
     @Override
     public int getItemCount() {
@@ -175,10 +173,10 @@ public class PersonsAdapter extends RecyclerView.Adapter<PersonsAdapter.CardView
         editTextEmail.setText(person.getPerson_email());
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("Kişi Güncelle");
+        builder.setTitle("Update Person");
         builder.setView(design);
 
-        builder.setPositiveButton("Güncelle", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("Update", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 
@@ -193,7 +191,7 @@ public class PersonsAdapter extends RecyclerView.Adapter<PersonsAdapter.CardView
             }
         });
 
-        builder.setNegativeButton("İptal", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 

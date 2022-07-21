@@ -26,7 +26,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private ArrayList<Persons> personsArrayList;
     private PersonsAdapter adapter;
     private Database db;
-    //private Persons persons;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,10 +97,10 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         final EditText editTextEmail = design.findViewById(R.id.editTextEmail);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Kişi Ekle");
+        builder.setTitle("Add Person");
         builder.setView(design);
 
-        builder.setPositiveButton("Ekle", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 
@@ -118,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             }
         });
 
-        builder.setNegativeButton("İptal", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 

@@ -4,8 +4,8 @@
 
     <item
         android:id="@+id/action_delete"
-        android:title="Sil" />
+        android:title="Delete" />
     <item
         android:id="@+id/action_update"
-        android:title="Güncelle" />
+        android:title="Update" />
 </menu>
